@@ -1,0 +1,53 @@
+/*
+	answer validation for graph input elements and stats
+*/
+var statusmsg = "";
+var path="/te_images/tests/buttons/";
+var s=document.questionList.s.value;
+var sID=document.questionList.sID.value;
+var answer=s.split(",");
+var answerID=sID.split(",");
+var num = answer.length-1;
+
+function checkMe(val,aID,qID) {
+	var elemName,elem;
+	hidestatus();
+	for(var i=1;2;i++){
+		elemName='r'+i+'_'+qID;
+		if (document.getElementById(elemName)){
+			elem = document.getElementById(elemName);
+			elem.src=path+"radio_unchecked.gif";
+		}
+		else{
+			break;
+		}
+	}
+	answer[qID-1] = val;
+	answerID[qID-1] = aID;
+	elemName='r'+aID+'_'+qID;
+	elem = document.getElementById(elemName);
+	elem.src=path+"radio_checked.gif";
+	return;
+}
+function hidestatus(){window.status=statusmsg;return true;}
+function SubmitQuestion() {
+	var r_answer = '';
+	var r_answerID = '';
+	hidestatus();
+	for (var i=0; i<num; i++) {
+		if (answer[i] == -1) {
+			var err = i+1;
+			if (num==1) {alert ('Answer to the question is missing\n\n');}
+			else {alert ('Answer to question # ' + err + ' is missing\n\n');}
+			return;
+		}
+		r_answer += answer[i]+'|';
+		r_answerID += answerID[i]+'|';
+	}
+	document.questionList.answerid.value = r_answer; // values for answers
+	document.questionList.userid.value = r_answerID; // id of the answers
+	document.questionList.submit();
+	return;
+}
+
+
