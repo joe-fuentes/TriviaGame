@@ -1,71 +1,152 @@
 <!DOCTYPE html>
-
 <html lang="en-us">
 
-  <head>
+<head>
 
-    <meta charset="UTF-8">
-    <title>TriviaGame</title>
+  <title>Trivia Quiz!</title>
+  <meta charset="utf-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
-  
-  </head>
+  <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 
-  <body>
+</head>
 
-    <div data-role="page">
-      <div data-role="header">
-        <h1>Common-Sense Science Trivia!</h1>
+<body>
+
+  <div class="container">
+
+    <header>
+
+      <div class="box-set">
+        <div class="box Name">
+          <h1 id="title"><strong>Common-Sense Science Trivia!</strong></h1>
+        </div>
       </div>
 
+    </header>
+
+    <div class="Message">
+      <p id="info">You will have 30 seconds to answer each question</p>
       <div id="show-number"></div>
-      <button id="start">Click Here to Start</button>
-
-      <div data-role="main" class="ui-content">
-        <form method="post" action="/action_page_post.php">
-          <fieldset data-role="controlgroup">
-            <legend>Choose your answer:</legend>
-            <label for="a">a: </label>
-            <input type="radio" name="choice" id="a" value="a">
-            <label for="b">b: </label>
-            <input type="radio" name="choice" id="b" value="b">
-            <label for="c">c: </label>
-            <input type="radio" name="choice" id="c" value="c">
-            <label for="d">d: </label>
-            <input type="radio" name="choice" id="d" value="d">
-          </fieldset>
-          <input type="submit" data-inline="true" value="Submit">
-        </form>
-      </div>
     </div>
-<!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-    <!-- Script -->
-    <script type="text/javascript" src="assets/javascript/app.js"></script>
+    <div class="showTimer">
+      <button id="start">Click here to Start the Quiz!</button>
+    </div>
 
-<!--
-    //  Set our number counter to any value.
+    <div id="questionBlock"></div><br><br><br><br>
+    <div id="answerBlock"></div>
+    <div class="nextQuestion">
+      <button id="next">Next</button>
+    </div>
+  </div>
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- Script
+  <script type="text/javascript" src="assets/javascript/app.js"></script>
+  -->
+  <script type="text/javascript">
+
+//  Set our number counter to any value.
     var number = 10;
 
     //  Variable that will hold our interval ID when we execute the "run" function
     var intervalId;
 
+    // Variable array to hold the trivia questions, along with possible answers
+    var triviaQuestions = {
+      Q1: "1. Which of the following statements about the metal mercury is NOT true?", A1: [
+          "Mercury is also called quicksilver",
+          "At room temperature, mercury is liquid",
+          "Mercury is very poisonous",
+          "Mercury is highly radioactive"
+      ],
+
+      Q2: "2. The echidna and the platypus are the only two mammals that:", A2: [  
+          "Lay eggs",
+          "Are capable of flight",
+          "Do not require oxygen",
+          "Do not nurse their young"
+      ],
+
+      Q3: "3. What is spelunking?", A3: [
+          "The study of tropical birds",
+          "The exploration of caves",
+          "Deep-sea diving",
+          "The study of ancient animal tracks"
+      ],
+
+      Q4: "4. What is the cause of the sound made when you 'crack a whip'?", A4: [        
+          "The actual sound of the whip is imperceptible. What we hear is a sharp echo against the earth, which greatly magnifies the slight sound.",
+          "A shock wave is created when the end of the whip travels faster than the sound waves created by its own motion.",
+          "As you sharply crack the whip, the leather of the whip stretches and suddenly becomes taut, making a loud noise.",
+          "Each whip is designed with two internal 'sticks' that snap together, making a loud noise when the whip is cracked."
+      ],
+
+      Q5: "5. Dry ice is:", A5: [
+          "Regular ice, with all the moisture sucked out",
+          "Frozen water with the addition of special chemicals to make it smoke",
+          "Frozen carbon dioxide",
+          "Frozen helium"
+      ],
+
+      Q6: "6. How many numerals can the average person remember in the correct order?", A6: [
+          "10",
+          "7",
+          "5",
+          "3"
+      ],
+
+      Q7: "7. How many karats is pure, unalloyed gold?", A7: [
+          "32",
+          "24",
+          "18",
+          "9"
+      ],
+
+      Q8: "8. How do dairies ensure that the cream does not rise to the top in whole or 2% milk?", A8: [        
+          "They pasteurize it.",
+          "They homogenize it.",
+          "They pack it in sterile containers.",
+          "They keep it constantly refrigerated."
+      ],
+
+      Q9: "9. What would some doctors prescribe a century ago when a patient complained of continual fatigue (a possible mineral deficiency)?", A9: [        
+          "Apples that have been pierced with nails and stored for several days.",
+          "Whole oats steamed with molasses and bran.",
+          "Ground olive pits cooked with dark tea in a heavy enamel pot.",
+          "A dozen raw eggs a week."
+      ],
+
+      Q10: "10. During the time of the dinosaurs, how many continents were there on Earth?", A10: [        
+          "1",
+          "3",
+          "4",
+          "8"
+      ]
+    }
+
+    
+
+    $("#next").hide();
+
     //  The decrement function.
     function decrement() {
-      //  Show the number in the #show-number tag.
-      $("#show-number").html("<h2>" + number + "</h2>");
-      //  Decrease number by one.
-      number;
       //  Once number hits zero...
-      if (number === -1) {
+      if (number > 0) {
+      //  Decrease number by one.
+       number--;
+      //  Show the number in the #show-number tag.
+      $("#show-number").html("<h2>" + number + " Seconds left</h2>");
+      }else {
         //  ...run the stop function.
         stop();
         //  Alert the user that time is up.
-        alert("Time Up!");
+        alert("Time's Up!");
       }
     }
     //  The stop function
@@ -75,17 +156,25 @@
       //  to the clearInterval function.
       clearInterval(intervalId);
     }
-    //  Execute the run function.
-/*    run(); */
 
-/*    $("#start").on("click", startTimer);
+    $("#start").on("click", startTimer);
 
     function startTimer() {
       $("#start").hide();
-      intervalId = setInterval(decrement, 1000)
-    } -->
+      $("#info").hide();
+      $("#next").show();
 
+        $("#questionBlock").html(triviaQuestions.Q1);
+        $("#answerBlock").html(triviaQuestions.A1[0]);
+        $("#answerBlock").append("<br><br>" + triviaQuestions.A1[1]);
+        $("#answerBlock").append("<br><br>" + triviaQuestions.A1[2]);
+        $("#answerBlock").append("<br><br>" + triviaQuestions.A1[3]);
 
-  </body>
+      intervalId = setInterval(decrement, 1000);
+    }
+
+  </script>
+
+</body>
 
 </html>
